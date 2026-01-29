@@ -30,10 +30,11 @@ Sales data is mock data inspired by Kaggle’s Sample Superstore dataset and str
 ```bash
 npm install
 npm run dev
+```
 
 🌍 Live Demo
 
-👉 <VERCEL_LINK>
+👉 <https://springer-capital-frontend-assessmen-kappa.vercel.app/>
 
 💻 GitHub Repository
 

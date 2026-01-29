@@ -1,14 +1,16 @@
-type ChartCardProps = {
+  export default function ChartCard({
+    title,
+    children,
+  }: {
     title: string;
     children: React.ReactNode;
-  };
-  
-  export default function ChartCard({ title, children }: ChartCardProps) {
+  }) {
     return (
-      <div className="bg-white rounded-xl shadow p-6">
-        <h2 className="text-lg font-semibold mb-4">{title}</h2>
+      <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
+        <h2 className="text-lg font-medium">{title}</h2>
         {children}
       </div>
     );
   }
+  
   

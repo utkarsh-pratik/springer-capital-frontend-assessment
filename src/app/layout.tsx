@@ -14,30 +14,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-gray-50 text-gray-900">
-        {/* Navbar */}
-        <nav className="bg-white border-b shadow-sm">
-          <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between">
-            <span className="font-semibold text-lg">
-              Springer Capital
-            </span>
+      <body className="bg-slate-50 text-slate-900 antialiased">
+  {/* Top Navigation */}
+  <nav className="bg-white border-b border-slate-200">
+    <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+      <span className="text-sm font-semibold tracking-wide">
+        Springer Capital
+      </span>
 
-            <div className="flex gap-6 text-sm">
-              <Link href="/" className="hover:underline">
-                Home
-              </Link>
-              <Link href="/dashboard" className="hover:underline">
-                Dashboard
-              </Link>
-            </div>
-          </div>
-        </nav>
+      <div className="flex gap-6 text-sm text-slate-600">
+        <Link href="/" className="hover:text-slate-900">Home</Link>
+        <a href="/dashboard" className="hover:text-slate-900">Dashboard</a>
+      </div>
+    </div>
+  </nav>
 
-        {/* Page Content */}
-        <main className="max-w-7xl mx-auto px-6 py-8">
-          {children}
-        </main>
-      </body>
+  {/* Page Content */}
+  <main className="max-w-6xl mx-auto px-6 py-10">
+    {children}
+  </main>
+</body>
+
     </html>
   );
 }

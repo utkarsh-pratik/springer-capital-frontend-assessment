@@ -2,19 +2,19 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <section className="text-center mt-20">
-      <h1 className="text-4xl font-bold mb-4">
+    <section className="mt-24 max-w-2xl">
+      <h1 className="text-3xl font-semibold mb-4">
         Sales Analytics Dashboard
       </h1>
 
-      <p className="text-gray-600 max-w-xl mx-auto mb-8">
-        An interactive dashboard to visualize yearly sales data
+      <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+        A clean, interactive dashboard to explore yearly sales performance
         using modern frontend architecture and data visualization.
       </p>
 
       <Link
         href="/dashboard"
-        className="inline-block bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition"
+        className="inline-flex items-center rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 transition"
       >
         View Dashboard →
       </Link>
