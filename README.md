@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Springer Capital – Frontend Assessment
 
-## Getting Started
+## 📌 Project Overview
+This project is a Sales Dashboard built as part of the Springer Capital Frontend Final Assessment.  
+It visualizes yearly sales data using interactive charts and follows atomic design principles.
 
-First, run the development server:
+## 🛠 Tech Stack
+- Next.js 15 (App Router)
+- TypeScript
+- Tailwind CSS
+- Recharts
 
+## 🧱 Architecture
+The project follows **Atomic Design**:
+- Atoms: Buttons, selectors
+- Molecules: Chart cards
+- Organisms: Sales chart components
+
+## 📊 Features
+- Sales dashboard for 2022, 2023, 2024
+- Interactive bar, line, and pie charts
+- Year selector
+- Sales threshold filter
+- Responsive UI
+
+## 📁 Data Source
+Sales data is mock data inspired by Kaggle’s Sample Superstore dataset and structured for frontend visualization.
+
+## ⚙️ Setup Instructions
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+🌍 Live Demo
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+👉 <VERCEL_LINK>
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+💻 GitHub Repository
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+👉 <https://github.com/utkarsh-pratik/springer-capital-frontend-assessment.git>
