@@ -72,7 +72,7 @@ export default function DashboardPage() {
   const regionData = aggregateByRegion(filteredData);
 
   return (
-    <main className="min-h-screen w-full p-6 lg:p-8">
+    <main className="min-h-screen w-full p-6 pt-20 lg:p-8">
       <div className="mx-auto max-w-screen-2xl">
         {/* Header */}
         <header className="mb-8 flex items-end justify-between">
