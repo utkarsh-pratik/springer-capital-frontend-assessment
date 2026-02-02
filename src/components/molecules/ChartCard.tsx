@@ -1,16 +1,12 @@
-  export default function ChartCard({
-    title,
-    children,
-  }: {
-    title: string;
-    children: React.ReactNode;
-  }) {
-    return (
-      <div className="bg-white border border-slate-200 rounded-xl p-6 space-y-4">
-        <h2 className="text-lg font-medium">{title}</h2>
-        {children}
-      </div>
-    );
-  }
-  
-  
+export const ChartCard = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
+  <div className="rounded-xl border border-gray-200 bg-white/80 p-6 shadow-md backdrop-blur-sm transition-all hover:shadow-lg">
+    <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+    <div className="mt-4">{children}</div>
+  </div>
+);

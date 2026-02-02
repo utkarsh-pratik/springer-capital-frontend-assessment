@@ -1,51 +1,83 @@
 "use client";
 
 import {
-  BarChart, Bar, LineChart, Line, PieChart, Pie, XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Tooltip,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+  Cell,
 } from "recharts";
-import { SalesData } from "@/types/sales";
 
-interface SalesChartProps {
-  data: SalesData[];
+const COLORS = [
+  "#6366F1",
+  "#22C55E",
+  "#F59E0B",
+  "#EF4444",
+  "#06B6D4",
+  "#8B5CF6",
+];
+
+export default function SalesChart({
+  data,
+  type,
+}: {
+  data: { month: string; sales: number }[];
   type: "bar" | "line" | "pie";
-}
-
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
-
-export default function SalesChart({ data, type }: SalesChartProps) {
-  // Ensure the chart has a container with a defined size to render into.
+}) {
   return (
-    <ResponsiveContainer width="100%" height={400}>
-      {type === "bar" ? (
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="sales" fill="#8884d8" />
-        </BarChart>
-      ) : type === "line" ? (
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="sales" stroke="#82ca9d" />
-        </LineChart>
-      ) : (
-        <PieChart>
-          <Pie data={data} dataKey="sales" nameKey="month" cx="50%" cy="50%" outerRadius={150} fill="#8884d8" label>
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Tooltip />
-          <Legend />
-        </PieChart>
-      )}
-    </ResponsiveContainer>
+    <div className="h-[380px] w-full">
+      <ResponsiveContainer>
+        {type === "bar" && (
+          <BarChart data={data}>
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Bar dataKey="sales" radius={[6, 6, 0, 0]}>
+              {data.map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              ))}
+            </Bar>
+          </BarChart>
+        )}
+
+        {type === "line" && (
+          <LineChart data={data}>
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Line
+              type="monotone"
+              dataKey="sales"
+              stroke="#6366F1"
+              strokeWidth={3}
+            />
+          </LineChart>
+        )}
+
+        {type === "pie" && (
+          <PieChart>
+            <Tooltip />
+            <Pie
+              data={data}
+              dataKey="sales"
+              nameKey="month"
+              cx="50%"
+              cy="50%"
+              outerRadius={130}
+            >
+              {data.map((_, i) => (
+                <Cell key={i} fill={COLORS[i % COLORS.length]} />
+              ))}
+            </Pie>
+          </PieChart>
+        )}
+      </ResponsiveContainer>
+    </div>
   );
 }
