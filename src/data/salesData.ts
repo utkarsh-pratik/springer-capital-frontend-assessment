@@ -68,7 +68,7 @@ function generateSalesData(): SalesDataItem[] {
         }
 
         const quantity = Math.floor(Math.random() * 5) + 1;
-        const discount = Math.random() > 0.7 ? Math.floor(Math.random() * 20) + 5 : 0;
+        const discount = (id % 10 > 7) ? ((id % 20) + 5) : 0;
         const sales = Math.floor(basePrice * quantity * (1 - discount / 100));
         const cost = Math.floor(sales * 0.6); // 60% cost ratio
         const profit = sales - cost;

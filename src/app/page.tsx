@@ -1,12 +1,56 @@
 "use client";
 
 import { useState } from "react";
+import { DollarSign, ShoppingCart, TrendingUp, RotateCcw } from "lucide-react";
 import { salesData } from "@/data/salesData";
+import type { SalesDataItem } from "@/types/sales";
+import { KpiCard } from "@/components/atoms/KpiCard";
 import { ChartCard } from "@/components/molecules/ChartCard";
 import { LineChart } from "@/components/molecules/LineChart";
 import { PieChart } from "@/components/molecules/PieChart";
 import { BarChart } from "@/components/molecules/BarChart";
-import type { SalesDataItem } from "@/types/sales";
+import { ControlPanel } from "@/components/organisms/ControlPanel";
+
+// --- Utility Functions ---
+const calculateTotalSales = (data: SalesDataItem[], year: number) => {
+  return data
+    .filter((item) => item.year === year)
+    .reduce((sum, item) => sum + item.sales, 0);
+};
+
+const calculateAvgSales = (data: SalesDataItem[], year: number) => {
+  const filteredData = data.filter((item) => item.year === year);
+  const total = filteredData.reduce((sum, item) => sum + item.sales, 0);
+  return filteredData.length > 0 ? total / filteredData.length : 0;
+};
+
+const aggregateByCategory = (data: SalesDataItem[]) => {
+  const categoryMap = new Map<string, number>();
+  data.forEach((item) => {
+    const current = categoryMap.get(item.category) || 0;
+    categoryMap.set(item.category, current + item.sales);
+  });
+  return Array.from(categoryMap.entries())
+    .map(([category, sales]) => ({
+      category,
+      sales,
+    }))
+    .sort((a, b) => b.sales - a.sales);
+};
+
+const aggregateByRegion = (data: SalesDataItem[]) => {
+  const regionMap = new Map<string, number>();
+  data.forEach((item) => {
+    const current = regionMap.get(item.region) || 0;
+    regionMap.set(item.region, current + item.sales);
+  });
+  return Array.from(regionMap.entries())
+    .map(([region, sales]) => ({
+      region,
+      sales,
+    }))
+    .sort((a, b) => b.sales - a.sales);
+};
 
 const aggregateByPeriod = (
   data: SalesDataItem[],
@@ -20,7 +64,10 @@ const aggregateByPeriod = (
       monthMap.set(key, current + item.sales);
     });
     return Array.from(monthMap.entries())
-      .map(([period, sales]) => ({ period, sales }))
+      .map(([period, sales]) => ({
+        period,
+        sales,
+      }))
       .sort((a, b) => a.period.localeCompare(b.period));
   } else {
     const quarterMap = new Map<string, number>();
@@ -31,42 +78,48 @@ const aggregateByPeriod = (
       quarterMap.set(key, current + item.sales);
     });
     return Array.from(quarterMap.entries())
-      .map(([period, sales]) => ({ period, sales }))
+      .map(([period, sales]) => ({
+        period,
+        sales,
+      }))
       .sort((a, b) => a.period.localeCompare(b.period));
   }
 };
 
-const aggregateByCategory = (data: SalesDataItem[]) => {
-  const categoryMap = new Map<string, number>();
-  data.forEach((item) => {
-    const current = categoryMap.get(item.category) || 0;
-    categoryMap.set(item.category, current + item.sales);
-  });
-  return Array.from(categoryMap.entries())
-    .map(([category, sales]) => ({ category, sales }))
-    .sort((a, b) => b.sales - a.sales);
-};
+// --- Main Page Component ---
 
-const aggregateByRegion = (data: SalesDataItem[]) => {
-  const regionMap = new Map<string, number>();
-  data.forEach((item) => {
-    const current = regionMap.get(item.region) || 0;
-    regionMap.set(item.region, current + item.sales);
-  });
-  return Array.from(regionMap.entries())
-    .map(([region, sales]) => ({ region, sales }))
-    .sort((a, b) => b.sales - a.sales);
-};
-
-export default function DashboardPage() {
+export default function LandingPage() {
   const [selectedYear, setSelectedYear] = useState<number>(2024);
   const [chartType, setChartType] = useState<"monthly" | "quarterly">("monthly");
-  const [threshold, setThreshold] = useState<number>(5000);
 
+  // Default values for reset
+  const DEFAULT_YEAR = 2024;
+  const DEFAULT_CHART_TYPE = "monthly";
+  const DEFAULT_THRESHOLD = 0;
+
+  const handleReset = () => {
+    setSelectedYear(DEFAULT_YEAR);
+    setChartType(DEFAULT_CHART_TYPE);
+    setThreshold(DEFAULT_THRESHOLD);
+  };
+
+  const [threshold, setThreshold] = useState<number>(0);
+
+  // Filter data by selected year and threshold
   const filteredData = salesData.filter(
     (item) => item.year === selectedYear && item.sales >= threshold
   );
 
+  // Calculate KPIs
+  const totalSales = calculateTotalSales(salesData, selectedYear);
+  const avgSales = calculateAvgSales(salesData, selectedYear);
+  const prevYearTotal = calculateTotalSales(salesData, selectedYear - 1);
+  const growthRate =
+    prevYearTotal > 0
+      ? (((totalSales - prevYearTotal) / prevYearTotal) * 100).toFixed(1)
+      : "N/A";
+
+  // Prepare chart data
   const trendData = aggregateByPeriod(filteredData, chartType);
   const categoryData = aggregateByCategory(filteredData);
   const regionData = aggregateByRegion(filteredData);
@@ -75,106 +128,94 @@ export default function DashboardPage() {
     <main className="min-h-screen w-full p-6 pt-20 lg:p-8">
       <div className="mx-auto max-w-screen-2xl">
         {/* Header */}
-        <header className="mb-8 flex items-end justify-between">
-          <div>
-            <h1 className="text-4xl font-bold text-gray-900">
-              Detailed Analytics Dashboard
-            </h1>
-            <p className="mt-2 text-lg text-gray-600">
-              Advanced filtering and visualization for {selectedYear}
-            </p>
-          </div>
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900">Sales Overview</h1>
+          <p className="mt-2 text-lg text-gray-600">
+            Welcome back, here&apos;s your performance summary for {selectedYear}.
+          </p>
         </header>
 
-        {/* Filters */}
-        <div className="mb-6 flex flex-wrap gap-4 rounded-xl border border-gray-200 bg-white/80 p-4 shadow-md backdrop-blur-sm">
-          <div>
-            <label htmlFor="year-filter" className="block text-sm font-medium text-gray-600">
-              Year
-            </label>
-            <select
-              id="year-filter"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(Number(e.target.value))}
-              className="mt-1 block rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            >
-              <option value={2024}>2024</option>
-              <option value={2023}>2023</option>
-              <option value={2022}>2022</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="period-filter" className="block text-sm font-medium text-gray-600">
-              Period
-            </label>
-            <select
-              id="period-filter"
-              value={chartType}
-              onChange={(e) => setChartType(e.target.value as "monthly" | "quarterly")}
-              className="mt-1 block rounded-md border border-gray-300 bg-white py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            >
-              <option value="monthly">Monthly</option>
-              <option value="quarterly">Quarterly</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="threshold-filter" className="block text-sm font-medium text-gray-600">
-              Sales Threshold ($)
-            </label>
-            <input
-              id="threshold-filter"
-              type="number"
-              value={threshold}
-              onChange={(e) => setThreshold(Number(e.target.value))}
-              className="mt-1 block w-32 rounded-md border border-gray-300 bg-white py-2 pl-3 pr-3 text-base focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Left Column: KPIs and Controls */}
+          <div className="flex flex-col gap-6 lg:col-span-1">
+            <KpiCard
+              title="Total Sales"
+              value={`$${totalSales.toLocaleString()}`}
+              icon={DollarSign}
+              trend={
+                growthRate !== "N/A"
+                  ? `${Number(growthRate) > 0 ? "+" : ""}${growthRate}% YoY`
+                  : undefined
+              }
             />
-          </div>
-        </div>
+            <KpiCard
+              title="Avg. Sale Value"
+              value={`$${Math.round(avgSales).toLocaleString()}`}
+              icon={ShoppingCart}
+            />
+            <KpiCard
+              title="Total Transactions"
+              value={filteredData.length.toLocaleString()}
+              icon={TrendingUp}
+            />
 
-        {/* Charts Grid */}
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div className="lg:col-span-2">
-            <ChartCard title="Sales Trend Over Time">
+            <ControlPanel
+              selectedYear={selectedYear}
+              chartType={chartType}
+              onYearChange={setSelectedYear}
+              onChartTypeChange={setChartType}
+            />
+
+            {/* Threshold Filter */}
+            <div className="rounded-xl border border-gray-200 bg-white/80 p-6 shadow-md backdrop-blur-sm">
+              <h3 className="font-semibold text-gray-800">Sales Threshold</h3>
+              <div className="mt-4 space-y-3">
+                <div>
+                  <label
+                    htmlFor="threshold"
+                    className="block text-sm font-medium text-gray-600"
+                  >
+                    Minimum Sale Amount ($)
+                  </label>
+                  <input
+                    id="threshold"
+                    type="number"
+                    value={threshold}
+                    onChange={(e) => setThreshold(Number(e.target.value))}
+                    className="mt-1 block w-full rounded-md border border-gray-300 bg-white py-2 pl-3 pr-3 text-base focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  />
+                </div>
+                <p className="text-xs text-gray-500">
+                  Showing {filteredData.length} transactions ≥ ${threshold.toLocaleString()}
+                </p>
+              </div>
+            </div>
+
+            {/* Add this reset button card */}
+            <div className="rounded-xl border border-gray-200 bg-white/80 p-6 shadow-md backdrop-blur-sm">
+              <button
+                onClick={handleReset}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-700 transition-all hover:bg-gray-100 hover:shadow-md"
+              >
+                <RotateCcw className="h-4 w-4" />
+                Reset All Filters
+              </button>
+            </div>
+          </div>
+
+          {/* Right Column: Main Charts */}
+          <div className="flex flex-col gap-6 lg:col-span-2">
+            <ChartCard title="Sales Trend">
               <LineChart data={trendData} />
             </ChartCard>
-          </div>
-          <ChartCard title="Sales by Category">
-            <PieChart data={categoryData} />
-          </ChartCard>
-          <ChartCard title="Regional Performance">
-            <BarChart data={regionData} />
-          </ChartCard>
-        </div>
-
-        {/* Data Summary */}
-        <div className="mt-6 rounded-xl border border-gray-200 bg-white/80 p-6 shadow-md backdrop-blur-sm">
-          <h3 className="text-lg font-semibold text-gray-800">Data Summary</h3>
-          <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
-            <div>
-              <p className="text-sm text-gray-500">Filtered Transactions</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {filteredData.length}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Total Sales</p>
-              <p className="text-2xl font-bold text-gray-900">
-                ${filteredData.reduce((sum, item) => sum + item.sales, 0).toLocaleString()}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Average Sale</p>
-              <p className="text-2xl font-bold text-gray-900">
-                ${filteredData.length > 0 
-                  ? Math.round(filteredData.reduce((sum, item) => sum + item.sales, 0) / filteredData.length).toLocaleString()
-                  : 0}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Total Profit</p>
-              <p className="text-2xl font-bold text-gray-900">
-                ${filteredData.reduce((sum, item) => sum + item.profit, 0).toLocaleString()}
-              </p>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              <ChartCard title="Sales by Category">
+                <PieChart data={categoryData} />
+              </ChartCard>
+              <ChartCard title="Regional Performance">
+                <BarChart data={regionData} />
+              </ChartCard>
             </div>
           </div>
         </div>

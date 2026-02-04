@@ -8,7 +8,7 @@ export const Navigation = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed left-6 top-6 z-50 flex gap-2 rounded-xl border border-gray-200 bg-white/90 p-2 shadow-lg backdrop-blur-sm">
+    <nav className="fixed right-6 top-6 z-50 flex gap-2 rounded-xl border border-gray-200 bg-white/90 p-2 shadow-lg backdrop-blur-sm">
       <Link
         href="/"
         className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
